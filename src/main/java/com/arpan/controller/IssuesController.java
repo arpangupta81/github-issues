@@ -29,7 +29,7 @@ public class IssuesController {
     public String getNumberOfOpenIssues(@RequestParam String gitRepoUrl, Model model) {
         Optional<NumberOfIssuesModel> issuesModel = issuesService.getIssuesModel(gitRepoUrl);
         if (!issuesModel.isPresent()) {
-            return "/error-page";
+            return "/error";
         }
         model.addAttribute("gitIssuesModel", issuesModel.get());
         return "/results";
