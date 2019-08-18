@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta content="Results Page for Github Stats" name="Description">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Stats Results</title>
+    <style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 50%;
+  }
+
+td, th {
+  border: 1px solid #000000;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+
+    </style>
+</head>
+<body style="background-image:url(daniel-polevoy-rE1Ur4OUP7c-unsplash.jpg); background-size: cover; ">
+<br/>
+<br/>
+<h1 style="text-align: center">THE RESULTS</h1>
+<br/>
+<br/>
+<table align="center">
+    <tr>
+        <th>TITLE</th>
+        <th>NUMBER</th>
+    </tr>
+    <tr>
+        <td>TOTAL NUMBER OF ISSUES OPEN</td>
+        <td th:text="${gitIssuesModel.totalNumberOfOpenIssues}"></td>
+    </tr>
+    <tr>
+        <td>NUMBER OF ISSUES IN LAST 24 HOURS</td>
+        <td th:text="${gitIssuesModel.issuesInLastOneDay}"></td>
+    </tr>
+    <tr>
+        <td>NUMBER OF ISSUES MORE THAN 24 HOURS AGO BUT LESS THAN 7 DAYS AGO</td>
+        <td th:text="${gitIssuesModel.issuesInLastSevenDays}"></td>
+    </tr>
+    <tr>
+        <td>NUMBER OF OPEN ISSUES THAT WERE OPENED MORE THAN 7 DAYS AGO</td>
+        <td th:text="${gitIssuesModel.issuesSevenDaysAgo}"></td>
+    </tr>
+</table>
+<br><br><br><br><br><br><br>
+<p align="center">For Going to Home Page
+    <a href='/'>Click Here</a>
+</p>
+</body>
+</html>
