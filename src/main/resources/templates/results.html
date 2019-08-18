@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta content="Results Page for Github Stats" name="Description">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Stats Results</title>
+    <title>Results Page</title>
     <style>
     body {
-    background-image:url(daniel-polevoy-rE1Ur4OUP7c-unsplash.jpg);
+     background-image:url(results.jpg);
      background-size: cover;
     }
 
@@ -15,6 +15,7 @@ table {
   font-family: arial, sans-serif;
   border-collapse: collapse;
   width: 50%;
+  box-shadow: 10px 10px 5px #000000;
   }
 
 td, th {
@@ -23,7 +24,7 @@ td, th {
   padding: 8px;
 }
 
-tr:nth-child(even) {
+tr {
   background-color: #dddddd;
 }
 
@@ -55,9 +56,12 @@ tr:nth-child(even) {
         <td th:text="${gitIssuesModel.issuesSevenDaysAgo}"></td>
     </tr>
 </table>
-<br><br><br><br><br><br><br>
-<p align="center">For Going to Home Page
-    <a href='/'>Click Here</a>
+<br><br><br><br>
+<p align="center">
+    <font style="font-size: 20px;">
+        For Going to Home Page
+        <a href='/'>Click Here</a>
+    </font>
 </p>
 </body>
 </html>

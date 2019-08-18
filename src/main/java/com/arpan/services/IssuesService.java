@@ -73,11 +73,7 @@ public class IssuesService {
             log.error("Received Null or Empty URL");
             return Optional.empty();
         }
-
         List<RepositoryIssue> repositoryIssues = getAll(pageIssues(gitApiUrl), errorList);
-        if (!errorList.isEmpty()) {
-            return Optional.empty();
-        }
-        return getNumberOfIssuesModel(repositoryIssues);
+        return errorList.isEmpty() ? getNumberOfIssuesModel(repositoryIssues) : Optional.empty();
     }
 }

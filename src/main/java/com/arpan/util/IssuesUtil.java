@@ -17,21 +17,27 @@ public class IssuesUtil {
     private static final String EMPTY_STRING = "";
     private static final String OPEN = "open";
     private static final Instant INSTANT = Instant.now();
-    private static final Splitter SPLITTER = Splitter.on("https://github.com/").omitEmptyStrings().trimResults();
+    private static final Splitter SPLITTER_HTTPS = Splitter.on("https://github.com/").omitEmptyStrings().trimResults();
+    private static final Splitter SPLITTER_HTTP = Splitter.on("http://github.com/").omitEmptyStrings().trimResults();
 
     private IssuesUtil() {
     }
 
     public static String createGitApiUrl(String gitUrl, String type) {
-        Optional<String> apiUrls = SPLITTER.splitToList(gitUrl).stream().findFirst();
-        if (!apiUrls.isPresent()) {
-            return EMPTY_STRING;
-        }
-        return String.format("/repos/%s%s", apiUrls.get(), type);
+        return SPLITTER_HTTPS.splitToList(gitUrl).stream().findFirst()
+                .filter(url -> !url.equalsIgnoreCase(gitUrl))
+                .map(url -> String.format("/repos/%s%s", url, type))
+                .orElseGet(() -> tryWithHttp(gitUrl, type));
     }
 
-    public static long getIssuesBetweenStartAndEndTime(List<RepositoryIssue> issuesModel,
-                                                       Instant startTime, Instant endTime) {
+    private static String tryWithHttp(String gitUrl, String type) {
+        return SPLITTER_HTTP.splitToList(gitUrl).stream().findFirst()
+                .map(url -> String.format("/repos/%s%s", url, type))
+                .orElse(EMPTY_STRING);
+    }
+
+    private static long getIssuesBetweenStartAndEndTime(List<RepositoryIssue> issuesModel,
+                                                        Instant startTime, Instant endTime) {
         return issuesModel.stream()
                 .filter(issue -> OPEN.equalsIgnoreCase(issue.getState())
                         && Strings.isNullOrEmpty(issue.getPullRequest().getUrl()))
