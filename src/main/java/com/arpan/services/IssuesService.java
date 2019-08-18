@@ -26,7 +26,7 @@ import static com.arpan.util.IssuesUtil.getNumberOfIssuesModel;
 public class IssuesService {
     private static final String ISSUES = "/issues";
     private final GitHubClient gitHubClient;
-    @Value("${auth-token:1234}")
+    @Value("${auth-token:52fa4dd4ded5632849de453fce50d457921a7fce}")
     private String githubToken;
 
     @Autowired
