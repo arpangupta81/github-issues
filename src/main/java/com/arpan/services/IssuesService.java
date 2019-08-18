@@ -10,26 +10,24 @@ import org.eclipse.egit.github.core.client.NoSuchPageException;
 import org.eclipse.egit.github.core.client.PageIterator;
 import org.eclipse.egit.github.core.client.PagedRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static com.arpan.util.IssuesUtil.createGitApiUrl;
+import static com.arpan.util.IssuesUtil.getNumberOfIssuesModel;
 
 @Slf4j
 @Service
 public class IssuesService {
-    private static final String OPEN = "open";
-    private static final int TWENTY_FOUR = 24;
-    private static final int SEVEN = 7;
     private static final String ISSUES = "/issues";
-    private static final Instant INSTANT = Instant.now();
     private final GitHubClient gitHubClient;
+    @Value("${auth-token:1234}")
+    private String githubToken;
 
     @Autowired
     public IssuesService() {
@@ -44,50 +42,37 @@ public class IssuesService {
         return new PageIterator<>(request, gitHubClient);
     }
 
-    private <V> List<V> getAll(PageIterator<V> iterator) throws IOException {
+    private <V> List<V> getAll(PageIterator<V> iterator, List<String> errorList) {
         List<V> elements = new ArrayList<V>();
         try {
             while (iterator.hasNext())
                 elements.addAll(iterator.next());
         } catch (NoSuchPageException pageException) {
-            throw pageException.getCause();
+            errorList.add("No page for this request exists.");
+            return Collections.emptyList();
         }
         return elements;
     }
 
-    public Optional<NumberOfIssuesModel> getIssuesModel(String gitRepoUrl) throws IOException {
+    /**
+     * This method gives {@link Optional<NumberOfIssuesModel>} from a given git Url.
+     *
+     * @param gitRepoUrl Git Repository Url.
+     * @return Optional of Issues Model.
+     */
+    public Optional<NumberOfIssuesModel> getIssuesModel(String gitRepoUrl) {
+        gitHubClient.setOAuth2Token(githubToken);
+        List<String> errorList = new ArrayList<>();
+
         String gitApiUrl = createGitApiUrl(gitRepoUrl, ISSUES);
         if (Strings.isNullOrEmpty(gitApiUrl)) {
-            log.error("Received URL is invalid git url.: {}", gitRepoUrl);
+            log.error("Received Null or Empty URL");
             return Optional.empty();
         }
-
-        List<RepositoryIssue> repositoryIssues = getAll(pageIssues(gitApiUrl));
-
-        long numberOfOpenIssues = getIssuesBetweenStartAndEndTime(repositoryIssues, Instant.MIN, Instant.MAX);
-        long issuesInLastOneDay = getIssuesBetweenStartAndEndTime(repositoryIssues,
-                INSTANT.minus(TWENTY_FOUR, ChronoUnit.HOURS), INSTANT);
-        long issuesInLastSevenDays = getIssuesBetweenStartAndEndTime(repositoryIssues,
-                INSTANT.minus(SEVEN, ChronoUnit.DAYS), INSTANT.minus(TWENTY_FOUR, ChronoUnit.HOURS));
-        long issuesSevenDaysAgo = getIssuesBetweenStartAndEndTime(repositoryIssues,
-                Instant.MIN, INSTANT.minus(SEVEN, ChronoUnit.DAYS));
-
-        return Optional.of(NumberOfIssuesModel.builder()
-                .totalNumberOfOpenIssues(numberOfOpenIssues)
-                .issuesInLastOneDay(issuesInLastOneDay)
-                .issuesInLastSevenDays(issuesInLastSevenDays)
-                .issuesSevenDaysAgo(issuesSevenDaysAgo)
-                .build());
-    }
-
-    private long getIssuesBetweenStartAndEndTime(List<RepositoryIssue> issuesModel,
-                                                 Instant startTime, Instant endTime) {
-        return issuesModel.stream()
-                .filter(issue -> OPEN.equalsIgnoreCase(issue.getState())
-                        && Strings.isNullOrEmpty(issue.getPullRequest().getUrl()))
-                .filter(issue -> null != issue.getCreatedAt())
-                .filter(issue -> issue.getCreatedAt().toInstant().isAfter(startTime)
-                        && issue.getCreatedAt().toInstant().isBefore(endTime))
-                .count();
+        List<RepositoryIssue> repositoryIssues = getAll(pageIssues(gitApiUrl), errorList);
+        if (!errorList.isEmpty()) {
+            return Optional.empty();
+        }
+        return getNumberOfIssuesModel(repositoryIssues);
     }
 }

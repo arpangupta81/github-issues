@@ -3,12 +3,11 @@ package com.arpan.controller;
 import com.arpan.model.NumberOfIssuesModel;
 import com.arpan.services.IssuesService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.io.IOException;
 import java.util.Optional;
 
 @Controller
@@ -21,12 +20,18 @@ public class IssuesController {
         this.issuesService = issuesService;
     }
 
+    @GetMapping("/")
+    public String showForm() {
+        return "/form";
+    }
+
     @GetMapping("open-issues")
-    public ResponseEntity<?> getNumberOfOpenIssues(@RequestParam String gitRepoUrl) throws IOException {
+    public String getNumberOfOpenIssues(@RequestParam String gitRepoUrl, Model model) {
         Optional<NumberOfIssuesModel> issuesModel = issuesService.getIssuesModel(gitRepoUrl);
         if (!issuesModel.isPresent()) {
-            return ResponseEntity.badRequest().body("The requested Url is invalid");
+            return "/error-page";
         }
-        return ResponseEntity.ok().body(issuesModel.get());
+        model.addAttribute("gitIssuesModel", issuesModel.get());
+        return "/results";
     }
 }
