@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta content="Home Page for Github Stats" name="Description">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Home Page</title>
+    <title>Stats | Public Github Repository</title>
     <style>
         body {
+            background-size: auto;
             background-image: url(home-page.jpg);
             background-repeat: no-repeat;
             height: 100%;
@@ -37,7 +38,8 @@
 </div>
 
 <form action="/open-issues" method="get" style="text-align:center;">
-    <input name="gitRepoUrl" placeholder="Enter the Github Repository Url here..."
+    <input name="gitRepoUrl"
+           placeholder="Enter the Github Repository Url here... Example: https://github.com/{owner}/{repo}"
            required style="width: 30%; padding: 12px 20px; margin: 8px 0; box-sizing: border-box;" type="text"/>
     <br>
     <input style="-webkit-appearance: none; height: 30px; " type="submit" value="Click here to get Open Issues Stats"/>

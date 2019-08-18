@@ -12,13 +12,15 @@ import java.util.Optional;
 
 public class IssuesUtil {
 
-    private static final int TWENTY_FOUR = 24;
     private static final int SEVEN = 7;
-    private static final String EMPTY_STRING = "";
+    private static final int TWENTY_FOUR = 24;
     private static final String OPEN = "open";
+    private static final String EMPTY_STRING = "";
+    private static final String FORMAT = "/repos/%s%s";
     private static final Instant INSTANT = Instant.now();
-    private static final Splitter SPLITTER_HTTPS = Splitter.on("https://github.com/").omitEmptyStrings().trimResults();
+    private static final Splitter SPLITTER_WWW = Splitter.on("www.github.com/").omitEmptyStrings().trimResults();
     private static final Splitter SPLITTER_HTTP = Splitter.on("http://github.com/").omitEmptyStrings().trimResults();
+    private static final Splitter SPLITTER_HTTPS = Splitter.on("https://github.com/").omitEmptyStrings().trimResults();
 
     private IssuesUtil() {
     }
@@ -26,13 +28,21 @@ public class IssuesUtil {
     public static String createGitApiUrl(String gitUrl, String type) {
         return SPLITTER_HTTPS.splitToList(gitUrl).stream().findFirst()
                 .filter(url -> !url.equalsIgnoreCase(gitUrl))
-                .map(url -> String.format("/repos/%s%s", url, type))
+                .map(url -> String.format(FORMAT, url, type))
                 .orElseGet(() -> tryWithHttp(gitUrl, type));
     }
 
     private static String tryWithHttp(String gitUrl, String type) {
         return SPLITTER_HTTP.splitToList(gitUrl).stream().findFirst()
-                .map(url -> String.format("/repos/%s%s", url, type))
+                .filter(url -> !url.equalsIgnoreCase(gitUrl))
+                .map(url -> String.format(FORMAT, url, type))
+                .orElseGet(() -> tryWithWww(gitUrl, type));
+    }
+
+    private static String tryWithWww(String gitUrl, String type) {
+        return SPLITTER_WWW.splitToList(gitUrl).stream().findFirst()
+                .filter(url -> !url.equalsIgnoreCase(gitUrl))
+                .map(url -> String.format(FORMAT, url, type))
                 .orElse(EMPTY_STRING);
     }
 
