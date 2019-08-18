@@ -49,6 +49,7 @@ public class IssuesService {
                 elements.addAll(iterator.next());
         } catch (NoSuchPageException pageException) {
             errorList.add("No page for this request exists.");
+            log.error("No page for this request exists, Cause: ", pageException.getCause());
             return Collections.emptyList();
         }
         return elements;
