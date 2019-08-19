@@ -1,19 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta content="Error Page for Github Stats" name="Description">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Error</title>
-
     <style>
     body {
-            background-size: auto;
+            background-size: cover;
             background-image: url(error-page.jpg);
             background-repeat: no-repeat;
-            height: 100%;
+            height: 100vh;
             width: 100%;
         }
+
+
+
     </style>
 </head>
 <body>
@@ -23,11 +25,13 @@
 <br>
 <p style="text-align: center;">
     <font style="font-size: 20px;">
-        <b>The URL entered by you is incorrect.</b>
+        <b>The URL entered by you: </b>
+        <u>
+            <a style="color: #0000EE" th:text="${gitUrl}"></a>
+        </u>
+        <b>is incorrect.</b>
         <br/>
-        Please Check the url entered by you.
-        <br/>
-        Visit the github repository and try again once.
+        Verify the url - Visit the corresponding Github repository and Try again once.
         <br/>
         For Going to Home Page
         <a href='/'>Click Here</a>

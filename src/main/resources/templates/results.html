@@ -7,10 +7,10 @@
     <title>Results Page</title>
     <style>
     body {
-            background-size: auto;
-            background-image:url(results.jpg);
+            background-size: cover;
+            background-image: url(results.jpg);
             background-repeat: no-repeat;
-            height: 100%;
+            height: 100vh;
             width: 100%;
     }
 
@@ -31,12 +31,30 @@ tr {
   background-color: #dddddd;
 }
 
+
+
+
     </style>
 </head>
 <body>
 <br/><br/>
-<h1 style="text-align: center">THE RESULTS</h1>
 <br/><br/>
+<br/><br/>
+<font face="Petit Formal Script" style="font-size: 20px; color: white ">
+    <h1 style="text-align: center; background-color: black;
+      width: 50%; padding: 20px;  margin: auto; border-radius: 20px">Here Goes the Open
+        Issues Stats...</h1>
+</font>
+<br/><br/><br/>
+<p align="center" style="font-size: 30px; color: black">
+    <b>The Git Repository Url Provided by you was:
+        <br/>
+        <u>
+            <div align="center" style="color: #0000EE" th:text="${gitUrl}"></div>
+        </u>
+    </b>
+</p>
+<br/>
 <table align="center">
     <tr>
         <th>TITLE</th>
@@ -59,7 +77,7 @@ tr {
         <td th:text="${gitIssuesModel.issuesSevenDaysAgo}"></td>
     </tr>
 </table>
-<br><br><br><br>
+<br><br><br><br><br><br><br>
 <p align="center">
     <font style="font-size: 20px;">
         For Going to Home Page

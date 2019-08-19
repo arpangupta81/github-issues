@@ -28,13 +28,13 @@ public class IssuesService {
     private static final int ONE = 1;
     private static final int HUNDRED = 100;
     private static final String ISSUES = "/issues";
+    private final String key;
     private final GitHubClient gitHubClient;
-    @Value("${key:dummy-key}")
-    private String key;
 
     @Autowired
-    public IssuesService() {
+    public IssuesService(@Value("${key}") String key) {
         this.gitHubClient = new GitHubClient();
+        this.key = key;
     }
 
     private PageIterator<RepositoryIssue> pageIssues(String uri) {
@@ -70,7 +70,7 @@ public class IssuesService {
         List<String> errorList = new ArrayList<>();
         String gitApiUrl = createGitApiUrl(gitRepoUrl, ISSUES);
         if (Strings.isNullOrEmpty(gitApiUrl)) {
-            log.error("Received Null or Empty URL");
+            log.error("Received Invalid URL: {}", gitRepoUrl);
             return Optional.empty();
         }
         List<RepositoryIssue> repositoryIssues = getAll(pageIssues(gitApiUrl), errorList);
