@@ -20,14 +20,27 @@ public class IssuesController {
         this.issuesService = issuesService;
     }
 
+    /**
+     * Method to get to Home Page.
+     *
+     * @return Returns the path to home page.
+     */
     @GetMapping("/")
     public String showForm() {
         return "/form";
     }
 
+    /**
+     * Returns the open issues stats.
+     *
+     * @param gitRepoUrl Git RepositoryUrl.
+     * @param model      Model for MVC.
+     * @return forwards to the results page.
+     */
     @GetMapping("open-issues")
     public String getNumberOfOpenIssues(@RequestParam String gitRepoUrl, Model model) {
         Optional<NumberOfIssuesModel> issuesModel = issuesService.getIssuesModel(gitRepoUrl);
+        model.addAttribute("gitUrl", gitRepoUrl);
         if (!issuesModel.isPresent()) {
             return "/error";
         }
