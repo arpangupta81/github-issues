@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.net.HttpURLConnection;
 import java.time.Instant;
@@ -15,7 +15,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -32,12 +31,13 @@ public class IssuesServiceTest {
 
     @Test
     public void testGetIssuesWhenUrlIsEmpty() {
-        assertThat(issuesService.getIssuesModel(EMPTY_STRING)).isEqualTo(Optional.empty());
+        assertThat(issuesService.getIssuesModel(EMPTY_STRING)).isEmpty();
     }
 
     @Test
     public void testGetIssuesWhenApiGivesNoResponse() {
-        assertThat(issuesService.getIssuesModel(VALID_URL)).isEqualTo(Optional.empty());
+        assertThat(issuesService.getIssuesModel(VALID_URL))
+                .isEmpty();
     }
 
     @Test
