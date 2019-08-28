@@ -3,6 +3,7 @@ package com.arpan.util;
 import com.arpan.model.NumberOfIssuesModel;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
+import org.eclipse.egit.github.core.Issue;
 import org.eclipse.egit.github.core.RepositoryIssue;
 
 import java.time.Instant;
@@ -62,6 +63,8 @@ public class IssuesUtil {
                 .filter(issue -> null != issue.getCreatedAt())
                 .filter(issue -> issue.getCreatedAt().toInstant().isAfter(startTime)
                         && issue.getCreatedAt().toInstant().isBefore(endTime))
+                .map(Issue::getNumber)
+                .distinct()
                 .count();
     }
 
